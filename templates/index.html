@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>归档 - {{ site_title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans SC', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+        .card { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+    <header class="border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold">{{ site_title }}</h1>
+                    <p class="text-slate-400 text-sm mt-1">{{ site_description }}</p>
+                </div>
+                <a href="../index.html" class="text-blue-400 hover:text-blue-300 text-sm">← 返回今日日报</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-12">
+        <h2 class="text-2xl font-bold mb-8">历史归档</h2>
+        
+        <div class="grid gap-3">
+            {% for date in archives %}
+            <a href="{{ date }}.html" class="card rounded-lg p-4 border border-white/10 hover:border-blue-500/50 transition-colors flex items-center justify-between group">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold">
+                        {{ date[5:7] }}/{{ date[8:10] }}
+                    </div>
+                    <div>
+                        <div class="font-medium">{{ date }} 日报</div>
+                        <div class="text-sm text-slate-400">点击查看详情</div>
+                    </div>
+                </div>
+                <svg class="w-5 h-5 text-slate-500 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
+            {% endfor %}
+        </div>
+        
+        {% if not archives %}
+        <div class="text-center py-12 text-slate-500">
+            <p>暂无归档数据</p>
+        </div>
+        {% endif %}
+    </main>
+
+    <footer class="border-t border-white/10 mt-8">
+        <div class="max-w-7xl mx-auto px-4 py-6 text-center text-sm text-slate-500">
+            <p>{{ site_title }} · 数据仅供参考，不构成投资建议</p>
+        </div>
+    </footer>
+</body>
+</html>
