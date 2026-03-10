@@ -7,25 +7,43 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-# 添加 src 到路径
+# 确保能正确导入
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from config import STOCKS, INDEX_CODES
-from data_collector import get_all_stocks_data, get_all_indices, format_number
-from generator import SiteGenerator
+try:
+    from config import STOCKS, INDEX_CODES
+    from data_collector import get_all_stocks_data, get_all_indices
+    from generator import SiteGenerator
+except ImportError:
+    # GitHub Actions 中运行时的备用导入
+    from src.config import STOCKS, INDEX_CODES
+    from src.data_collector import get_all_stocks_data, get_all_indices
+    from src.generator import SiteGenerator
 
 def main():
     print(f"=== A股日报生成器 ===")
     print(f"运行时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
+    # 创建工作目录
+    os.makedirs("dist", exist_ok=True)
+    os.makedirs("dist/archive", exist_ok=True)
+    
     # 获取数据
     print("\n[1/4] 正在获取股票数据...")
-    stocks = get_all_stocks_data(STOCKS)
-    print(f"成功获取 {len(stocks)} 只股票数据")
+    try:
+        stocks = get_all_stocks_data(STOCKS)
+        print(f"成功获取 {len(stocks)} 只股票数据")
+    except Exception as e:
+        print(f"获取股票数据失败: {e}")
+        stocks = []
     
     print("\n[2/4] 正在获取大盘指数...")
-    indices = get_all_indices(INDEX_CODES)
-    print(f"成功获取 {len(indices)} 个指数数据")
+    try:
+        indices = get_all_indices(INDEX_CODES)
+        print(f"成功获取 {len(indices)} 个指数数据")
+    except Exception as e:
+        print(f"获取指数失败: {e}")
+        indices = []
     
     # 准备生成器
     print("\n[3/4] 正在生成网站...")
@@ -55,7 +73,7 @@ def main():
     archives = []
     if archive_dir.exists():
         archives = [f.stem for f in archive_dir.glob("*.html") if f.stem != today]
-        archives.append(today)
+    archives.append(today)
     
     # 生成归档页面
     index_html = generator.generate_index_page(archives)
