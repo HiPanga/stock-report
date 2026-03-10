@@ -10,12 +10,8 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 jobs:
-  generate-report:
+  build:
     runs-on: ubuntu-latest
     
     steps:
@@ -25,15 +21,12 @@ jobs:
       with:
         python-version: '3.11'
         
-    - name: Install dependencies
-      run: |
-        pip install akshare jinja2 pandas requests
+    - name: Install
+      run: pip install akshare jinja2 pandas requests lxml
         
-    - name: Generate report
+    - name: Generate
       run: python src/main.py
         
-    - uses: actions/configure-pages@v5
-      
     - uses: actions/upload-pages-artifact@v3
       with:
         path: './dist'
