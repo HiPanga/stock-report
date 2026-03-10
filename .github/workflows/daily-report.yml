@@ -1,4 +1,2 @@
     - name: Generate
-      run: |
-        cd src
-        python main.py
+      run: PYTHONPATH=src python src/main.py
