@@ -1,38 +1,27 @@
 name: Daily Stock Report
 
 on:
-  schedule:
-    - cron: '0 0 * * 1-5'
   workflow_dispatch:
 
 permissions:
-  contents: write
   pages: write
   id-token: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-        
-    - name: Install
-      run: pip install akshare jinja2 pandas requests lxml
+      - name: Build
+        run: |
+          mkdir -p dist
+          echo '<h1>测试</h1>' > dist/index.html
+          
+      - uses: actions/configure-pages@v5
       
-    - name: Generate
-      run: |
-        python src/main.py
-        ls -la dist/  # 检查文件
-        
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: dist/
-        
-    - name: Deploy
-      uses: actions/deploy-pages@v4
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+          
+      - uses: actions/deploy-pages@v4
